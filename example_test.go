@@ -3,7 +3,7 @@ package obfid
 import "fmt"
 
 func ExampleGenerator() {
-	generator, err := NewGenerator(32452867, 123)
+	generator, err := NewGenerator(32452867, 123, 30)
 	if err != nil {
 		panic(err)
 	}

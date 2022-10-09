@@ -7,7 +7,7 @@ import (
 )
 
 func TestGenerator(t *testing.T) {
-	generator, err := NewGenerator(32452867, 123)
+	generator, err := NewGenerator(32452867, 123, 30)
 	failIfErr(t, err)
 
 	for num := uint64(0); num < 30; num++ {
@@ -21,7 +21,7 @@ func TestGenerator(t *testing.T) {
 }
 
 func TestGenerator2(t *testing.T) {
-	generator, err := NewGenerator(32452867, 123)
+	generator, err := NewGenerator(32452867, 123, 30)
 	failIfErr(t, err)
 
 	for num := uint64(0); num < 30; num++ {
@@ -34,14 +34,37 @@ func TestGenerator2(t *testing.T) {
 	}
 }
 
+func TestGeneratorSmall(t *testing.T) {
+	generator, err := NewGenerator(32452867, 123, 5)
+	failIfErr(t, err)
+
+	res := map[uint64]struct{}{}
+
+	for num := uint64(0); num < 100; num++ {
+		enc := generator.Encode(num)
+		dec := generator.Decode(enc)
+
+		t.Logf("%d => %d => %d", num, enc, dec)
+
+		mustEqual(t, num%32, dec)
+		res[dec] = struct{}{}
+	}
+
+	for i := uint64(0); i < 32; i++ {
+		delete(res, i)
+	}
+
+	mustEqual(t, len(res), 0)
+}
+
 func Test_inverse(t *testing.T) {
-	inv, err := inverse(32452867)
+	inv, err := inverse(32452867, 1<<31-1)
 	failIfErr(t, err)
 	mustEqual(t, inv, uint64(23970219))
 }
 
 func BenchmarkEncode(b *testing.B) {
-	generator, err := NewGenerator(32452867, 123)
+	generator, err := NewGenerator(32452867, 123, 30)
 	failIfErr(b, err)
 
 	var count uint64
@@ -53,7 +76,7 @@ func BenchmarkEncode(b *testing.B) {
 }
 
 func BenchmarkDecode(b *testing.B) {
-	generator, err := NewGenerator(32452867, 123)
+	generator, err := NewGenerator(32452867, 123, 30)
 	failIfErr(b, err)
 
 	var count uint64
@@ -66,7 +89,7 @@ func BenchmarkDecode(b *testing.B) {
 
 func Benchmark_inverse(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		inv, err := inverse(32452867)
+		inv, err := inverse(32452867, 1<<31-1)
 		failIfErr(b, err)
 		mustEqual(b, inv, uint64(23970219))
 	}
