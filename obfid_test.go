@@ -91,21 +91,24 @@ func Benchmark_inverse(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		inv, err := inverse(32452867, 1<<31-1)
 		failIfErr(b, err)
-		mustEqual(b, inv, uint64(23970219))
+
+		if want := uint64(23970219); inv != want {
+			b.Fatalf("\nhave: %+v\nwant: %+v\n", inv, want)
+		}
 	}
 }
 
-func failIfErr(t testing.TB, err error) {
-	t.Helper()
+func failIfErr(tb testing.TB, err error) {
+	tb.Helper()
 	if err != nil {
-		t.Fatal(err)
+		tb.Fatal(err)
 	}
 }
 
-func mustEqual(t testing.TB, have, want interface{}) {
-	t.Helper()
+func mustEqual(tb testing.TB, have, want interface{}) {
+	tb.Helper()
 	if !reflect.DeepEqual(have, want) {
-		t.Fatalf("\nhave: %+v\nwant: %+v\n", have, want)
+		tb.Fatalf("\nhave: %+v\nwant: %+v\n", have, want)
 	}
 }
 

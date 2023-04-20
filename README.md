@@ -2,15 +2,14 @@
 
 [![build-img]][build-url]
 [![pkg-img]][pkg-url]
-[![reportcard-img]][reportcard-url]
-[![coverage-img]][coverage-url]
 [![version-img]][version-url]
 
-Obfuscating ID based on modular multiplicative inverse.
+Obfuscating ID based on modular multiplicative inverse in Go.
 
 ## Rationale
 
-TODO
+The simplest and fastest way to encode and expose to public an integer primary key from a database can be achieved by obfuscating it with [multiplicative inverse
+](https://en.wikipedia.org/wiki/Multiplicative_inverse) (aka Knuth's Hashing Algorithm).
 
 ## Features
 
@@ -18,7 +17,7 @@ TODO
 * Dependency-free.
 * Clean and tested code.
 
-See [GUIDE.md](https://github.com/cristalhq/obfid/blob/main/GUIDE.md) for more details
+See [these docs][pkg-url] or [GUIDE.md](https://github.com/cristalhq/obfid/blob/main/GUIDE.md) for more details.
 
 ## Install
 
@@ -60,11 +59,7 @@ for num := uint64(0); num < 10; num++ {
 // 9 => 292075872 => 9
 ```
 
-Also see examples: [examples_test.go](https://github.com/cristalhq/obfid/blob/main/example_test.go).
-
-## Documentation
-
-See [these docs][pkg-url].
+See examples: [example_test.go](https://github.com/cristalhq/obfid/blob/main/example_test.go).
 
 ## License
 
@@ -74,9 +69,5 @@ See [these docs][pkg-url].
 [build-url]: https://github.com/cristalhq/obfid/actions
 [pkg-img]: https://pkg.go.dev/badge/cristalhq/obfid
 [pkg-url]: https://pkg.go.dev/github.com/cristalhq/obfid
-[reportcard-img]: https://goreportcard.com/badge/cristalhq/obfid
-[reportcard-url]: https://goreportcard.com/report/cristalhq/obfid
-[coverage-img]: https://codecov.io/gh/cristalhq/obfid/branch/main/graph/badge.svg
-[coverage-url]: https://codecov.io/gh/cristalhq/obfid
 [version-img]: https://img.shields.io/github/v/release/cristalhq/obfid
 [version-url]: https://github.com/cristalhq/obfid/releases

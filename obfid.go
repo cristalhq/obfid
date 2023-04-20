@@ -46,8 +46,6 @@ func NewGenerator(prime, random uint64, bits int) (*Generator, error) {
 	return generator, nil
 }
 
-const maxInt32 = uint64(math.MaxInt32)
-
 // Encode returns obfuscated number.
 func (g *Generator) Encode(number uint64) uint64 {
 	return ((number * g.prime) & g.mask) ^ g.random
