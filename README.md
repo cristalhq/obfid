@@ -30,7 +30,11 @@ go get github.com/cristalhq/obfid
 ## Example
 
 ```go
-generator, err := NewGenerator(32452867, 123)
+prime := uint64(32452867)
+random := uint64(123456)
+bits := 30
+
+generator, err := NewGenerator(prime, random, bits)
 if err != nil {
 	panic(err)
 }
