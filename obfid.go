@@ -8,7 +8,7 @@ import (
 
 // IsPrime reports whether number is a prime using big.Int.ProbablyPrime.
 func IsPrime(prime uint64) bool {
-	return big.NewInt(int64(prime)).ProbablyPrime(20)
+	return (&big.Int{}).SetUint64(prime).ProbablyPrime(20)
 }
 
 var (
