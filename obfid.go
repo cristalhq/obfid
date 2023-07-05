@@ -67,9 +67,8 @@ func inverse(prime, mask uint64) (uint64, error) {
 
 	default:
 		// TODO: make alloc free (without math/big pkg)
-		p := big.NewInt(int64(prime))
-		max := big.NewInt(0).SetUint64(mask + 1)
-		var res big.Int
-		return res.ModInverse(p, max).Uint64(), nil
+		p := (&big.Int{}).SetUint64(prime)
+		max := (&big.Int{}).SetUint64(mask + 1)
+		return (&big.Int{}).ModInverse(p, max).Uint64(), nil
 	}
 }
