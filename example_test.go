@@ -4,10 +4,11 @@ import "fmt"
 
 func ExampleGenerator() {
 	prime := uint64(32452867)
+	offset := uint64(0)
 	random := uint64(123456)
 	bits := 30
 
-	generator, err := NewGenerator(prime, random, bits)
+	generator, err := NewGenerator(prime, random, offset, bits)
 	if err != nil {
 		panic(err)
 	}
@@ -34,4 +35,39 @@ func ExampleGenerator() {
 	// 7 => 227259733 => 7
 	// 8 => 259549784 => 8
 	// 9 => 292117339 => 9
+}
+
+func ExampleGenerator_withOffset() {
+	prime := uint64(32452867)
+	offset := uint64(10_000_000)
+	random := uint64(123456)
+	bits := 30
+
+	generator, err := NewGenerator(prime, random, offset, bits)
+	if err != nil {
+		panic(err)
+	}
+
+	for num := uint64(0); num < 10; num++ {
+		enc := generator.Encode(num)
+		dec := generator.Decode(enc)
+
+		fmt.Printf("%d => %d => %d\n", num, enc, dec)
+
+		if num != dec {
+			fmt.Printf("oops must be equal: %d != %d\n", num, dec)
+		}
+	}
+
+	// Output:
+	// 0 => 10123456 => 0
+	// 1 => 42428867 => 1
+	// 2 => 74979014 => 2
+	// 3 => 107284425 => 3
+	// 4 => 139836620 => 4
+	// 5 => 172142031 => 5
+	// 6 => 204692178 => 6
+	// 7 => 237259733 => 7
+	// 8 => 269549784 => 8
+	// 9 => 302117339 => 9
 }
