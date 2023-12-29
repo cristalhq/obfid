@@ -22,11 +22,12 @@ type Generator struct {
 	prime   uint64
 	inverse uint64
 	random  uint64
+	offset  uint64
 	mask    uint64
 }
 
-// NewGenerator creates a new generator using the provided prime number and random.
-func NewGenerator(prime, random uint64, bits int) (*Generator, error) {
+// NewGenerator creates a new generator using the provided prime number, random and offset.
+func NewGenerator(prime, random, offset uint64, bits int) (*Generator, error) {
 	if bits == 0 || bits > 64 {
 		return nil, ErrTooMuchBits
 	}
@@ -41,6 +42,7 @@ func NewGenerator(prime, random uint64, bits int) (*Generator, error) {
 		prime:   prime,
 		inverse: inverse,
 		random:  random,
+		offset:  offset,
 		mask:    mask,
 	}
 	return generator, nil
@@ -48,12 +50,12 @@ func NewGenerator(prime, random uint64, bits int) (*Generator, error) {
 
 // Encode returns obfuscated number.
 func (g *Generator) Encode(number uint64) uint64 {
-	return ((number * g.prime) & g.mask) ^ g.random
+	return ((number * g.prime) & g.mask) ^ g.random + g.offset
 }
 
 // Decode returns the original (deobfuscated) number.
 func (g *Generator) Decode(obfuscated uint64) uint64 {
-	return ((obfuscated ^ g.random) * g.inverse) & g.mask
+	return (((obfuscated - g.offset) ^ g.random) * g.inverse) & g.mask
 }
 
 // inverse calculates the inverse of prime.

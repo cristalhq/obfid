@@ -7,7 +7,7 @@ import (
 )
 
 func TestGenerator(t *testing.T) {
-	generator, err := NewGenerator(32452867, 123, 30)
+	generator, err := NewGenerator(32452867, 123, 0, 30)
 	failIfErr(t, err)
 
 	for num := uint64(0); num < 30; num++ {
@@ -21,7 +21,7 @@ func TestGenerator(t *testing.T) {
 }
 
 func TestGenerator2(t *testing.T) {
-	generator, err := NewGenerator(32452867, 123, 30)
+	generator, err := NewGenerator(32452867, 123, 0, 30)
 	failIfErr(t, err)
 
 	for num := uint64(0); num < 30; num++ {
@@ -35,7 +35,7 @@ func TestGenerator2(t *testing.T) {
 }
 
 func TestGeneratorSmall(t *testing.T) {
-	generator, err := NewGenerator(32452867, 123, 5)
+	generator, err := NewGenerator(32452867, 123, 0, 5)
 	failIfErr(t, err)
 
 	res := map[uint64]struct{}{}
@@ -64,7 +64,7 @@ func Test_inverse(t *testing.T) {
 }
 
 func BenchmarkEncode(b *testing.B) {
-	generator, err := NewGenerator(32452867, 123, 30)
+	generator, err := NewGenerator(32452867, 123, 0, 30)
 	failIfErr(b, err)
 
 	var count uint64
@@ -76,7 +76,7 @@ func BenchmarkEncode(b *testing.B) {
 }
 
 func BenchmarkDecode(b *testing.B) {
-	generator, err := NewGenerator(32452867, 123, 30)
+	generator, err := NewGenerator(32452867, 123, 0, 30)
 	failIfErr(b, err)
 
 	var count uint64
