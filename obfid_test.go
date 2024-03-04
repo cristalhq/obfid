@@ -6,9 +6,33 @@ import (
 	"testing"
 )
 
+func TestHard(t *testing.T) {
+	t.Skip("test takes 30sec+, here just for a reference")
+
+	prime := uint64(32_452_867)
+	random := uint64(32_452_867)
+	offset := uint64(10_000_000)
+	bits := 30
+
+	generator, err := NewGenerator(prime, random, offset, bits)
+	mustOk(t, err)
+
+	const size = 100_000_000
+	m := make(map[uint64]uint64, size)
+
+	for num := uint64(0); num < size; num++ {
+		enc := generator.Encode(num)
+		dec := generator.Decode(enc)
+
+		m[enc] = num
+		mustEqual(t, num, dec)
+	}
+	t.Logf("size: %v", len(m))
+}
+
 func TestGenerator(t *testing.T) {
-	generator, err := NewGenerator(32452867, 123, 0, 30)
-	failIfErr(t, err)
+	generator, err := NewGenerator(32_452_867, 123, 1_000_000, 30)
+	mustOk(t, err)
 
 	for num := uint64(0); num < 30; num++ {
 		enc := generator.Encode(num)
@@ -20,23 +44,9 @@ func TestGenerator(t *testing.T) {
 	}
 }
 
-func TestGenerator2(t *testing.T) {
-	generator, err := NewGenerator(32452867, 123, 0, 30)
-	failIfErr(t, err)
-
-	for num := uint64(0); num < 30; num++ {
-		dec := generator.Decode(num)
-		enc := generator.Encode(dec)
-
-		t.Logf("%d => %d => %d", num, dec, enc)
-
-		mustEqual(t, num, enc)
-	}
-}
-
 func TestGeneratorSmall(t *testing.T) {
-	generator, err := NewGenerator(32452867, 123, 0, 5)
-	failIfErr(t, err)
+	generator, err := NewGenerator(32_452_867, 123, 1_000_000, 5)
+	mustOk(t, err)
 
 	res := map[uint64]struct{}{}
 
@@ -58,14 +68,14 @@ func TestGeneratorSmall(t *testing.T) {
 }
 
 func Test_inverse(t *testing.T) {
-	inv, err := inverse(32452867, 1<<31-1)
-	failIfErr(t, err)
+	inv, err := inverse(32_452_867, 1<<31-1)
+	mustOk(t, err)
 	mustEqual(t, inv, uint64(23970219))
 }
 
 func BenchmarkEncode(b *testing.B) {
-	generator, err := NewGenerator(32452867, 123, 0, 30)
-	failIfErr(b, err)
+	generator, err := NewGenerator(32_452_867, 123, 1_000_000, 30)
+	mustOk(b, err)
 
 	var count uint64
 	b.ResetTimer()
@@ -76,8 +86,8 @@ func BenchmarkEncode(b *testing.B) {
 }
 
 func BenchmarkDecode(b *testing.B) {
-	generator, err := NewGenerator(32452867, 123, 0, 30)
-	failIfErr(b, err)
+	generator, err := NewGenerator(32_452_867, 123, 1_000_000, 30)
+	mustOk(b, err)
 
 	var count uint64
 	b.ResetTimer()
@@ -89,8 +99,8 @@ func BenchmarkDecode(b *testing.B) {
 
 func Benchmark_inverse(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		inv, err := inverse(32452867, 1<<31-1)
-		failIfErr(b, err)
+		inv, err := inverse(32_452_867, 1<<31-1)
+		mustOk(b, err)
 
 		if want := uint64(23970219); inv != want {
 			b.Fatalf("\nhave: %+v\nwant: %+v\n", inv, want)
@@ -98,7 +108,7 @@ func Benchmark_inverse(b *testing.B) {
 	}
 }
 
-func failIfErr(tb testing.TB, err error) {
+func mustOk(tb testing.TB, err error) {
 	tb.Helper()
 	if err != nil {
 		tb.Fatal(err)
