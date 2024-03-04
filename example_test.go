@@ -3,9 +3,9 @@ package obfid
 import "fmt"
 
 func ExampleGenerator() {
-	prime := uint64(32452867)
+	prime := uint64(32_452_867)
 	offset := uint64(0)
-	random := uint64(123456)
+	random := uint64(123_456)
 	bits := 30
 
 	generator, err := NewGenerator(prime, random, offset, bits)
@@ -38,9 +38,9 @@ func ExampleGenerator() {
 }
 
 func ExampleGenerator_withOffset() {
-	prime := uint64(32452867)
-	offset := uint64(10_000_000)
-	random := uint64(123456)
+	prime := uint64(32_452_867)
+	offset := uint64(1_000_000)
+	random := uint64(123_456)
 	bits := 30
 
 	generator, err := NewGenerator(prime, random, offset, bits)
@@ -60,14 +60,14 @@ func ExampleGenerator_withOffset() {
 	}
 
 	// Output:
-	// 0 => 10123456 => 0
-	// 1 => 42428867 => 1
-	// 2 => 74979014 => 2
-	// 3 => 107284425 => 3
-	// 4 => 139836620 => 4
-	// 5 => 172142031 => 5
-	// 6 => 204692178 => 6
-	// 7 => 237259733 => 7
-	// 8 => 269549784 => 8
-	// 9 => 302117339 => 9
+	// 0 => 1123456 => 0
+	// 1 => 33428867 => 1
+	// 2 => 65979014 => 2
+	// 3 => 98284425 => 3
+	// 4 => 130836620 => 4
+	// 5 => 163142031 => 5
+	// 6 => 195692178 => 6
+	// 7 => 228259733 => 7
+	// 8 => 260549784 => 8
+	// 9 => 293117339 => 9
 }

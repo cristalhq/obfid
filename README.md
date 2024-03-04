@@ -30,11 +30,12 @@ go get github.com/cristalhq/obfid
 ## Example
 
 ```go
-prime := uint64(32452867)
-random := uint64(123456)
+prime := uint64(32_452_867)
+random := uint64(123_456)
+offset := uint64(1_000_000)
 bits := 30
 
-generator, err := NewGenerator(prime, random, bits)
+generator, err := obfid.NewGenerator(prime, random, offset, bits)
 if err != nil {
 	panic(err)
 }
@@ -51,16 +52,16 @@ for num := uint64(0); num < 10; num++ {
 }
 
 // Output:
-// 0 => 123 => 0
-// 1 => 32452984 => 1
-// 2 => 64905853 => 2
-// 3 => 97358706 => 3
-// 4 => 129811575 => 4
-// 5 => 162264436 => 5
-// 6 => 194717289 => 6
-// 7 => 227170158 => 7
-// 8 => 259623011 => 8
-// 9 => 292075872 => 9
+// 0 => 1123456 => 0
+// 1 => 33428867 => 1
+// 2 => 65979014 => 2
+// 3 => 98284425 => 3
+// 4 => 130836620 => 4
+// 5 => 163142031 => 5
+// 6 => 195692178 => 6
+// 7 => 228259733 => 7
+// 8 => 260549784 => 8
+// 9 => 293117339 => 9
 ```
 
 See examples: [example_test.go](https://github.com/cristalhq/obfid/blob/main/example_test.go).
