@@ -12,7 +12,9 @@ func IsPrime(prime uint64) bool {
 }
 
 var (
-	ErrTooMuchBits = errors.New("too much bits")
+	ErrInvalidBits = errors.New("too much bits")
+	ErrTooMuchBits = ErrInvalidBits
+	ErrEvenPrime   = errors.New("prime cannot be even")
 	ErrNotPrime    = errors.New("number is not a prime")
 	ErrTooLarge    = errors.New("prime is larger than math.MaxInt64")
 )
@@ -21,15 +23,18 @@ var (
 type Generator struct {
 	prime   uint64
 	inverse uint64
-	random  uint64
+	xorMask uint64
 	offset  uint64
 	mask    uint64
 }
 
 // NewGenerator creates a new generator using the provided prime number, random and offset.
-func NewGenerator(prime, random, offset uint64, bits int) (*Generator, error) {
-	if bits == 0 || bits > 64 {
-		return nil, ErrTooMuchBits
+func NewGenerator(prime, xorMask, offset uint64, bits int) (*Generator, error) {
+	if bits < 1 || bits > 64 {
+		return nil, ErrInvalidBits
+	}
+	if prime % 2 == 0 {
+		return nil, ErrEvenPrime
 	}
 	mask := uint64(1<<bits - 1)
 
@@ -41,7 +46,7 @@ func NewGenerator(prime, random, offset uint64, bits int) (*Generator, error) {
 	generator := &Generator{
 		prime:   prime,
 		inverse: inverse,
-		random:  random,
+		xorMask: xorMask,
 		offset:  offset,
 		mask:    mask,
 	}
@@ -50,12 +55,12 @@ func NewGenerator(prime, random, offset uint64, bits int) (*Generator, error) {
 
 // Encode returns obfuscated number.
 func (g *Generator) Encode(number uint64) uint64 {
-	return ((number * g.prime) & g.mask) ^ g.random + g.offset
+	return (((number * g.prime) & g.mask) ^ g.xorMask) + g.offset
 }
 
 // Decode returns the original (deobfuscated) number.
 func (g *Generator) Decode(obfuscated uint64) uint64 {
-	return (((obfuscated - g.offset) ^ g.random) * g.inverse) & g.mask
+	return (((obfuscated - g.offset) ^ g.xorMask) * g.inverse) & g.mask
 }
 
 // inverse calculates the inverse of prime.
