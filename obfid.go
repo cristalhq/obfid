@@ -2,7 +2,6 @@ package obfid
 
 import (
 	"errors"
-	"math"
 	"math/big"
 )
 
@@ -30,22 +29,20 @@ type Generator struct {
 
 // NewGenerator creates a new generator using the provided prime number, random and offset.
 func NewGenerator(prime, xorMask, offset uint64, bits int) (*Generator, error) {
-	if bits < 1 || bits > 64 {
+	switch {
+	case bits < 1 || bits > 64:
 		return nil, ErrInvalidBits
-	}
-	if prime % 2 == 0 {
+	case prime%2 == 0:
 		return nil, ErrEvenPrime
+	case !IsPrime(prime):
+		return nil, ErrNotPrime
 	}
-	mask := uint64(1<<bits - 1)
 
-	inverse, err := inverse(prime, mask)
-	if err != nil {
-		return nil, err
-	}
+	mask := uint64(1<<bits - 1)
 
 	generator := &Generator{
 		prime:   prime,
-		inverse: inverse,
+		inverse: modInverse(prime) & mask,
 		xorMask: xorMask,
 		offset:  offset,
 		mask:    mask,
@@ -63,19 +60,11 @@ func (g *Generator) Decode(obfuscated uint64) uint64 {
 	return (((obfuscated - g.offset) ^ g.xorMask) * g.inverse) & g.mask
 }
 
-// inverse calculates the inverse of prime.
-func inverse(prime, mask uint64) (uint64, error) {
-	switch {
-	case prime > math.MaxInt64:
-		return 0, ErrTooLarge
-
-	case !IsPrime(prime):
-		return 0, ErrNotPrime
-
-	default:
-		// TODO: make alloc free (without math/big pkg)
-		p := (&big.Int{}).SetUint64(prime)
-		max := (&big.Int{}).SetUint64(mask + 1)
-		return (&big.Int{}).ModInverse(p, max).Uint64(), nil
+// modInverse returns the inverse of odd p modulo 2^64.
+func modInverse(p uint64) uint64 {
+	inv := p                 // correct to 3 bits, since p*p ≡ 1 (mod 8)
+	for i := 0; i < 5; i++ { // 3 → 6 → 12 → 24 → 48 → 96 bits
+		inv *= 2 - p*inv
 	}
+	return inv
 }
