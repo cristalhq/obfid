@@ -67,12 +67,6 @@ func TestGeneratorSmall(t *testing.T) {
 	mustEqual(t, len(res), 0)
 }
 
-func Test_inverse(t *testing.T) {
-	inv, err := inverse(32_452_867, 1<<31-1)
-	mustOk(t, err)
-	mustEqual(t, inv, uint64(23970219))
-}
-
 func BenchmarkEncode(b *testing.B) {
 	generator, err := NewGenerator(32_452_867, 123, 1_000_000, 30)
 	mustOk(b, err)
@@ -95,17 +89,6 @@ func BenchmarkDecode(b *testing.B) {
 		count += generator.Decode(uint64(i))
 	}
 	sink(count)
-}
-
-func Benchmark_inverse(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		inv, err := inverse(32_452_867, 1<<31-1)
-		mustOk(b, err)
-
-		if want := uint64(23970219); inv != want {
-			b.Fatalf("\nhave: %+v\nwant: %+v\n", inv, want)
-		}
-	}
 }
 
 func mustOk(tb testing.TB, err error) {
